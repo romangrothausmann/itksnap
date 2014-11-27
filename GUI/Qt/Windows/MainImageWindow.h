@@ -36,6 +36,7 @@ class SliceViewPanel;
 class GlobalUIModel;
 class QDockWidget;
 class SnakeWizardPanel;
+class GlobalWSWizardPanel;
 class EventBucket;
 class QModelIndex;
 class QProgressDialog;
@@ -84,6 +85,9 @@ public:
 
   // Initiate active contour segmentation
   void OpenSnakeWizard();
+
+  // Initiate watershed segmentation
+  void OpenGlobalWSWizard();
 
   // Load a drag-n-dropped file
   void LoadDroppedFile(QString file);
@@ -136,6 +140,8 @@ private slots:
   void on_actionLabel_Editor_triggered();
 
   void onSnakeWizardFinished();
+
+  void onGlobalWSWizardFinished();
 
   void on_actionUnload_All_triggered();
 
@@ -268,6 +274,8 @@ private slots:
 
   void on_actionUnload_All_Overlays_triggered();
 
+  void on_actionToggleJsrcVis_triggered();
+
 protected:
 
   // bool eventFilter(QObject *obj, QEvent *event);
@@ -304,7 +312,7 @@ private:
   QWidget *m_ViewPanels[4];
 
   // Left and right docks
-  QDockWidget *m_DockLeft, *m_DockRight;
+  QDockWidget *m_DockLeft, *m_DockRight, *m_DockRight2;
 
   // Size before the right dock is shown
   QSize m_SizeWithoutRightDock;
@@ -319,6 +327,9 @@ private:
 
   // SNAP wizard panel (in right dock)
   SnakeWizardPanel *m_SnakeWizard;
+
+  // GlobalWS wizard panel (in right dock)
+  GlobalWSWizardPanel *m_GlobalWSWizard;
 
   Ui::MainImageWindow *ui;
 
