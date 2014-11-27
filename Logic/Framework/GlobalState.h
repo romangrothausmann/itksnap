@@ -117,7 +117,10 @@ enum ToolbarModeType
   NAVIGATION_MODE,
   POLYGON_DRAWING_MODE,
   PAINTBRUSH_MODE,
-  ROI_MODE,
+  SNAKE_ROI_MODE,
+  JOIN_MODE,
+  GLOBALWS_ROI_MODE,
+  GWSJOIN_MODE,
   ANNOTATION_MODE
 };
 
@@ -153,6 +156,7 @@ struct PaintbrushSettings
   bool volumetric;
   bool isotropic;
   bool chase;
+  bool direct;
 
   PaintbrushWatershedSettings watershed;
 };
