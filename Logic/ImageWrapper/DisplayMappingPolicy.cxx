@@ -110,7 +110,6 @@ JsrcDisplayMappingPolicy<TWrapperTraits>
   for(int i = 0; i < 3; i++)
     {
     m_RGBAFilter[i] = RGBAFilterType::New();
-    m_RGBAFilter[i]->SetFunctor(m_Functor);
     }
 }
 
@@ -149,24 +148,6 @@ JsrcDisplayMappingPolicy<TWrapperTraits>
 ::GetDisplaySlice(unsigned int slice)
 {
   return m_RGBAFilter[slice]->GetOutput();
-}
-
-template <class TWrapperTraits>
-inline typename JsrcDisplayMappingPolicy<TWrapperTraits>::DisplayPixelType
-JsrcDisplayMappingPolicy<TWrapperTraits>::MappingFunctor
-::operator()(PixelType in)
-{
-  itk::RGBPixel<DisplayPixelType::ComponentType> RGBp;
-  DisplayPixelType RGBAp;
-  itk::Functor::ScalarToRGBPixelFunctor<JSRType> mFunctor;
-
-  RGBp= mFunctor(in);
-  RGBAp[0]= RGBp[0];
-  RGBAp[1]= RGBp[1];
-  RGBAp[2]= RGBp[2];
-  RGBAp[3]= (in == 0) ? 0 : itk::NumericTraits<DisplayPixelType::ComponentType>::max(); //make label 0 fully transparent
-
-  return  RGBAp;
 }
 
 

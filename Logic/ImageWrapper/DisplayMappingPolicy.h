@@ -117,11 +117,6 @@ public:
                              AbstractDisplayMappingPolicy)
 };
 
-namespace itk {
-  template <class TInput,class TOutput,class TFunctor>
-    class UnaryFunctorImageFilter;
-}
-
 template <class TWrapperTraits>
 class JsrcDisplayMappingPolicy
     : public AbstractJsrcDisplayMappingPolicy
@@ -156,21 +151,10 @@ protected:
   JsrcDisplayMappingPolicy();
   ~JsrcDisplayMappingPolicy();
 
-  class MappingFunctor
-  {
-  public:
-    DisplayPixelType operator()(PixelType in);
-    bool operator != (const MappingFunctor &f) const {return false;} //needed by UnaryFunctorImageFilter even tough ScalarToRGBPixelFunctor does not have this operator
-  };
-
-  // it is not possible to use ScalarToRGBPixelFunctor directly here 
-  // because the expected output of MappingFunctor is RGBA
-  typedef itk::UnaryFunctorImageFilter
-    <InputSliceType, DisplaySliceType, MappingFunctor> RGBAFilterType;
+  typedef JsrcToRGBAImageFilter <InputSliceType, DisplaySliceType> RGBAFilterType;
   typedef SmartPtr<RGBAFilterType> RGBAFilterPointer;
 
   RGBAFilterPointer m_RGBAFilter[3];
-  MappingFunctor m_Functor;
 
   WrapperType *m_Wrapper;
 };
