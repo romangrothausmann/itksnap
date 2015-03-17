@@ -14,11 +14,27 @@ part of Click'n'Join mode, which was contributed by Roman Grothausmann
 #include "GenericImageData.h"
 #include "JOINImageData.h"
 #include "DisplayLayoutModel.h" //access tiled/stacked view mode
+#include "ImageIODelegates.h"
+#include "ImageIOWizard.h"
+#include "ImageIOWizardModel.h"
 
 #include <itkGradientAnisotropicDiffusionImageFilter.h>
 #include <itkGradientMagnitudeImageFilter.h>
 #include <itkWatershedImageFilter.h>
 #include <itkCastImageFilter.h>
+#include <itkCommand.h>
+
+
+void FilterEventHandlerITK(itk::Object *caller, const itk::EventObject &event, void*){
+
+    const itk::ProcessObject* filter = static_cast<const itk::ProcessObject*>(caller);
+
+    if(itk::ProgressEvent().CheckEvent(&event))
+	fprintf(stderr, "\r%s progress: %5.1f%%", filter->GetNameOfClass(), 100.0 * filter->GetProgress());//stderr is flushed directly
+    else if(itk::EndEvent().CheckEvent(&event))
+	std::cerr << std::endl << std::flush;
+    }
+
 
 // TODO: move this into a separate file!!!!
 class WatershedPipeline{
@@ -29,10 +45,21 @@ public:
     typedef itk::Image<GWSType, 3> WatershedImageType;
 
     WatershedPipeline(){
+
+	itk::CStyleCommand::Pointer eventCallbackITK;
+	eventCallbackITK = itk::CStyleCommand::New();
+	eventCallbackITK->SetCallback(FilterEventHandlerITK);
+
 	adf = ADFType::New();
+	adf->AddObserver(itk::ProgressEvent(), eventCallbackITK);
+	adf->AddObserver(itk::EndEvent(), eventCallbackITK);
 	gmf = GMFType::New();
+	gmf->AddObserver(itk::ProgressEvent(), eventCallbackITK);
+	gmf->AddObserver(itk::EndEvent(), eventCallbackITK);
 	gmf->SetInput(adf->GetOutput());
 	wf = WFType::New();
+	wf->AddObserver(itk::ProgressEvent(), eventCallbackITK);
+	wf->AddObserver(itk::EndEvent(), eventCallbackITK);
 	cif = CIFType::New();
 	cif->SetInput(wf->GetOutput());
 	}
@@ -241,4 +268,49 @@ void GlobalWSWizardPanel::on_btnClearSeg_clicked(){
     driver->ClearJdst();
 
     driver->InvokeEvent(SegmentationChangeEvent());
+    }
+
+void GlobalWSWizardPanel::on_btnLoadFromFile_clicked(){
+    // not working yet
+    // Create a model for IO
+    SmartPtr<LoadMainImageDelegate> delegate = LoadMainImageDelegate::New();
+    delegate->Initialize(m_ParentModel->GetDriver());
+    SmartPtr<ImageIOWizardModel> model = ImageIOWizardModel::New();
+    model->InitializeForLoad(m_ParentModel, delegate,
+	"GWSImage", "GWS Source Image");
+
+    // Execute the IO wizard
+    ImageIOWizard wiz(this);
+    wiz.SetModel(model);
+    wiz.exec();
+    }
+
+void GlobalWSWizardPanel::on_btnWSRangeBack_clicked(){
+    try
+	{
+	// Handle cursor
+	QtCursorOverride curse(Qt::WaitCursor);
+
+	// Move to the range page
+	ui->stack->setCurrentWidget(ui->pgPreproc);
+	}
+    catch(IRISException &exc)
+	{
+	QMessageBox::warning(this, "ITK-SNAP", exc.what(), QMessageBox::Ok);
+	}
+    }
+
+void GlobalWSWizardPanel::on_btnJoinBack_clicked(){
+    try
+	{
+	// Handle cursor
+	QtCursorOverride curse(Qt::WaitCursor);
+
+	// Move to the range page
+	ui->stack->setCurrentWidget(ui->pgWSRange);
+	}
+    catch(IRISException &exc)
+	{
+	QMessageBox::warning(this, "ITK-SNAP", exc.what(), QMessageBox::Ok);
+	}    
     }

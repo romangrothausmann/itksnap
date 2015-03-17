@@ -60,6 +60,12 @@ private slots:
 
   void on_btnClearSeg_clicked();
 
+  void on_btnLoadFromFile_clicked();
+
+  void on_btnWSRangeBack_clicked();
+
+  void on_btnJoinBack_clicked();
+
 private:
 
   GlobalUIModel *m_ParentModel;
