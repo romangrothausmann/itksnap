@@ -61,11 +61,9 @@ public:
   typedef JSRType ComponentType;
   typedef itk::Image<ComponentType, 3> ImageType;
 
-  typedef IdentityInternalToNativeIntensityMapping NativeIntensityMapping;
-  typedef ColorLabelTableDisplayMappingPolicy<Self> DisplayMapping;
+  typedef LinearInternalToNativeIntensityMapping NativeIntensityMapping;
+  typedef JsrcDisplayMappingPolicy<Self> DisplayMapping;
   typedef NullScalarImageWrapperCommonRepresentation<GreyType, Self> CommonRepresentationPolicy;
-
-  //itkStaticConstMacro(DefaultColorMap, ColorMap::SystemPreset, ColorMap::COLORMAP_GREY);
 
   // Whether this image is shown on top of all other layers by default
   itkStaticConstMacro(StickyByDefault, bool, false);
@@ -264,8 +262,7 @@ typedef AnatomicImageWrapperTraits<GreyType>::WrapperType AnatomicImageWrapper;
 typedef AnatomicScalarImageWrapperTraits<GreyType>::WrapperType AnatomicScalarImageWrapper;
 typedef LabelImageWrapperTraits::WrapperType LabelImageWrapper;
 typedef SpeedImageWrapperTraits::WrapperType SpeedImageWrapper;
-//typedef JsrcImageWrapperTraits::WrapperType JsrcImageWrapper;
-typedef LabelImageWrapperTraits::WrapperType JsrcImageWrapper;
+typedef JsrcImageWrapperTraits::WrapperType JsrcImageWrapper;
 typedef LabelImageWrapperTraits::WrapperType JdstImageWrapper;
 typedef LevelSetImageWrapperTraits::WrapperType LevelSetImageWrapper;
 
