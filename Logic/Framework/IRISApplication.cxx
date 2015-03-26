@@ -279,7 +279,7 @@ IRISApplication
 
 void 
 IRISApplication
-::CopySegementationToJsrc(const SNAPSegmentationROISettings &roi,
+::CopyLayerToJsrc(const SNAPSegmentationROISettings &roi, int LayerId,
                           CommandType *progressCommand)
 {
   assert(m_JOINImageData->IsJsrcLoaded());
@@ -287,30 +287,68 @@ IRISApplication
   ////creating (shallow) copy, should only be used for initialization of CnJ (GWS fills its Jsrc with WS)
   ////avoids m_IRISImageData->GetSegmentation()->DeepCopyRegion in case JSRType != LabelType
 
-  typedef LabelImageWrapper::ImageType SourceImageType;
+  //typedef LabelImageWrapper::ImageType SourceImageType;
   typedef JsrcImageWrapper::ImageType TargetImageType;
 
-  SourceImageType::Pointer source = m_IRISImageData->GetSegmentation()->GetImage();
-  TargetImageType::Pointer target = m_JOINImageData->GetJsrc()->GetImage();
-
   // Create iterators for copying from one to the other
-  typedef itk::ImageRegionConstIterator<SourceImageType> SourceIteratorType;
+  TargetImageType::Pointer target = m_JOINImageData->GetJsrc()->GetImage();
   typedef itk::ImageRegionIterator<TargetImageType> TargetIteratorType;
-  //SourceIteratorType itSource(source,source->GetBufferedRegion());
   TargetIteratorType itTarget(target,target->GetBufferedRegion());
-  SourceIteratorType itSource(source,roi.GetROI());
   //TargetIteratorType itTarget(target,roi.GetROI());
 
-  // Go through both iterators, copy the new over the old
-  itSource.GoToBegin();
-  itTarget.GoToBegin();
-  while(!itSource.IsAtEnd())
-    {
-    itTarget.Set(itSource.Get());//needs no cast as JSRType >= LabelType
+  if(LayerId > 0){
 
-    ++itSource;
-    ++itTarget;
-    }
+      typedef SpeedImageWrapper::ImageType SourceImageType;
+
+      // Cast the layer to anatomic image wrapper type ScalarImageWrapper
+      AnatomicImageWrapper *ovlWrapper= dynamic_cast<AnatomicImageWrapper *>(m_IRISImageData->GetLastOverlay());
+      //AnatomicImageWrapper *ovlWrapper= dynamic_cast<AnatomicImageWrapper *>(m_JOINImageData->GetLastOverlay());
+      //LabelImageWrapper *ovlWrapper= dynamic_cast<LabelImageWrapper *>(m_IRISImageData->GetLastOverlay());
+      //source = ovlWrapper->GetScalarRepresentation(0)->GetImage(); 
+      SourceImageType::Pointer source = ovlWrapper->GetDefaultScalarRepresentation()->GetCommonFormatImage();
+      //source = ovlWrapper->GetImage();
+
+      // Create iterators for copying from one to the other
+      typedef itk::ImageRegionConstIterator<SourceImageType> SourceIteratorType;
+      SourceIteratorType itSource(source,source->GetBufferedRegion());//no error but also no data copied
+      //SourceIteratorType itSource(source,roi.GetROI());//region error
+      
+      // Go through both iterators, copy the new over the old
+      itSource.GoToBegin();
+      itTarget.GoToBegin();
+      while(!itSource.IsAtEnd())
+	  {
+	  itTarget.Set(itSource.Get());//needs no cast as JSRType >= LabelType
+	  
+	  ++itSource;
+	  ++itTarget;
+	  }
+      
+  }
+  else{
+
+      typedef LabelImageWrapper::ImageType SourceImageType;
+
+
+      SourceImageType::Pointer source = m_IRISImageData->GetSegmentation()->GetImage();
+
+      // Create iterators for copying from one to the other
+      typedef itk::ImageRegionConstIterator<SourceImageType> SourceIteratorType;
+      //SourceIteratorType itSource(source,source->GetBufferedRegion());
+      SourceIteratorType itSource(source,roi.GetROI());
+      
+      // Go through both iterators, copy the new over the old
+      itSource.GoToBegin();
+      itTarget.GoToBegin();
+      while(!itSource.IsAtEnd())
+	  {
+	  itTarget.Set(itSource.Get());//needs no cast as JSRType >= LabelType
+	  
+	  ++itSource;
+	  ++itTarget;
+	  }
+
+  }
 
   // The target has been modified
   target->Modified();

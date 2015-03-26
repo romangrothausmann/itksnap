@@ -65,8 +65,8 @@ void JoinDataPanel::on_btnStartCnJ_clicked(){
 	    driver->GetGlobalState()->GetSegmentationROISettings(), sel,
 	    m_Model->GetProgressCommand());
 
-	driver->CopySegementationToJsrc(
-	    driver->GetGlobalState()->GetSegmentationROISettings(),
+	driver->CopyLayerToJsrc(
+	    driver->GetGlobalState()->GetSegmentationROISettings(), 0,
 	    m_Model->GetProgressCommand());
 	driver->SetCurrentImageDataToJOIN();
 
@@ -83,19 +83,13 @@ void JoinDataPanel::on_btnStartCnJ_clicked(){
 	m_Model->GetGlobalState()->SetToolbarMode(GLOBALWS_ROI_MODE);
 	} break;
     case 2:{
-	// Create a model for IO
-	SmartPtr<LoadSegmentationImageDelegate> delegate = LoadSegmentationImageDelegate::New();
-	delegate->Initialize(m_Model->GetDriver());
-	SmartPtr<ImageIOWizardModel> model = ImageIOWizardModel::New();
-	model->InitializeForLoad(m_Model, delegate,
-	    "JsrImage", "Join Source Image");
-	
-	// Execute the IO wizard
-	ImageIOWizard wiz(this);
-	wiz.SetModel(model);
-	wiz.exec();
+	//// todo:
+	//// mod GUI to have two buttons: CnJ of Layer, CnJ of gWS
+	//// in CnJ+L two buttons: load Segmentation to Jsrc (active if UIF_BASEIMG_LOADED), load last Overlay to Jsrc (activ if UIF_OVERLAY_LOADED)
 
-	//todo check for cancel in wizard and return from JOIN_MODE
+	//// optionally check that m_IRISImageData->GetLastOverlay() != NULL
+
+	//// separate CopyLayerToJsrc into CopySegmentationToJsrc and CopyOverlayToJsrc (where GrayType is casted to JSRType)
 
 	IRISApplication *driver = m_Model->GetDriver();
 
@@ -114,8 +108,8 @@ void JoinDataPanel::on_btnStartCnJ_clicked(){
 	    driver->GetGlobalState()->GetSegmentationROISettings(), sel,
 	    m_Model->GetProgressCommand());
 
-	driver->CopySegementationToJsrc(
-	    driver->GetGlobalState()->GetSegmentationROISettings(),
+	driver->CopyLayerToJsrc(
+	    driver->GetGlobalState()->GetSegmentationROISettings(), 1,
 	    m_Model->GetProgressCommand());
 	driver->SetCurrentImageDataToJOIN();
 

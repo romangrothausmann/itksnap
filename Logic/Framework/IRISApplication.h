@@ -280,7 +280,7 @@ public:
   /**
    * Copy Segmentation to Jsrc for JOIN-mode 0
    */
-  void CopySegementationToJsrc(const SNAPSegmentationROISettings &roi,
+  void CopyLayerToJsrc(const SNAPSegmentationROISettings &roi, int LayerId,
                                CommandType *progressCommand = NULL);
 
   /**
