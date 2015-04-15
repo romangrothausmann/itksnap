@@ -298,20 +298,40 @@ IRISApplication
 
   if(LayerId > 0){
 
-      typedef SpeedImageWrapper::ImageType SourceImageType;
+      typedef ScalarImageWrapperBase::CommonFormatImageType SourceImageType;
+
+      fprintf(stderr, "Omin: %f, Omax: %f\n", m_IRISImageData->GetLastOverlay()->GetImageMinAsDouble(), m_IRISImageData->GetLastOverlay()->GetImageMaxAsDouble());
 
       // Cast the layer to anatomic image wrapper type ScalarImageWrapper
-      AnatomicImageWrapper *ovlWrapper= dynamic_cast<AnatomicImageWrapper *>(m_IRISImageData->GetLastOverlay());
+      //AnatomicImageWrapper *ovlWrapper= dynamic_cast<AnatomicImageWrapper *>(m_IRISImageData->GetMain());
+      AnatomicImageWrapper *ovlWrapper= dynamic_cast<AnatomicImageWrapper *>(m_JOINImageData->GetMain());
       //AnatomicImageWrapper *ovlWrapper= dynamic_cast<AnatomicImageWrapper *>(m_JOINImageData->GetLastOverlay());
       //LabelImageWrapper *ovlWrapper= dynamic_cast<LabelImageWrapper *>(m_IRISImageData->GetLastOverlay());
       //source = ovlWrapper->GetScalarRepresentation(0)->GetImage(); 
-      SourceImageType::Pointer source = ovlWrapper->GetDefaultScalarRepresentation()->GetCommonFormatImage();
+      //SourceImageType::Pointer source = ovlWrapper->GetDefaultScalarRepresentation()->GetCommonFormatImage();
+      SourceImageType::Pointer source = m_JOINImageData->GetMain()->GetDefaultScalarRepresentation()->GetCommonFormatImage();
+      //SourceImageType::Pointer source = ovlWrapper->GetImage();
       //source = ovlWrapper->GetImage();
+      //source->SetRegions(roi.GetROI());
+      //source->Modified();
+
+
+      // Get the roi chunk from the grey image
+      SmartPtr<AnatomyImageType> imgNew =
+	  m_IRISImageData->GetMain()->DeepCopyRegion(roi, progressCommand); //only roi of grey
+
+      //SourceImageType::RegionType region= source->GetLargestPossibleRegion();
+      SourceImageType::RegionType region= imgNew->GetLargestPossibleRegion();
+
+      std::cerr << "region index: " << region.GetIndex()
+	      << "  size: " <<  region.GetSize()
+	      << std::endl;
+
 
       // Create iterators for copying from one to the other
       typedef itk::ImageRegionConstIterator<SourceImageType> SourceIteratorType;
-      SourceIteratorType itSource(source,source->GetBufferedRegion());//no error but also no data copied
-      //SourceIteratorType itSource(source,roi.GetROI());//region error
+      //SourceIteratorType itSource(source,source->GetBufferedRegion());//no error but also no data copied
+      SourceIteratorType itSource(source,roi.GetROI());//region error
       
       // Go through both iterators, copy the new over the old
       itSource.GoToBegin();
