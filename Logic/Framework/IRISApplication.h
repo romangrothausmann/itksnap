@@ -45,6 +45,7 @@
 #include "SystemInterface.h"
 #include "UndoDataManager.h"
 #include "SNAPEvents.h"
+#include "JOINImageData.h" //for JsrcImageWrapper::ImageType::IndexType
 
 // #include "itkImage.h"
 
@@ -276,6 +277,11 @@ public:
    */
   void InitializeJOINImageData(const SNAPSegmentationROISettings &roi, int CnJMode,
                                CommandType *progressCommand = NULL);
+
+  /**
+   * Execute CnJ CopyFilter
+   */
+  bool ExecuteCnJCopy(JsrcImageWrapper::ImageType::IndexType SeedIndex);
 
   /**
    * Copy Segmentation to Jsrc for JOIN-mode 0
