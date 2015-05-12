@@ -298,6 +298,10 @@ IRISApplication
   m_JOINImageData->GetJoinCF()->SetSeedActive(true);
   m_JOINImageData->GetJoinCF()->Update();
 
+  // m_JOINImageData->GetJoinCF()->GetOutput()->SetDirection(m_IRISImageData->GetMain()->GetImageBase()->GetDirection());
+  // m_JOINImageData->GetJoinCF()->GetOutput()->SetSpacing(m_IRISImageData->GetMain()->GetImageBase()->GetSpacing());
+  // m_JOINImageData->GetJoinCF()->GetOutput()->SetOrigin(m_IRISImageData->GetMain()->GetImageBase()->GetOrigin());
+
   InvokeEvent(LayerChangeEvent());
   return m_JOINImageData->GetJoinCF()->GetUpdateFlag();
 }
@@ -462,6 +466,16 @@ IRISApplication
         m_SNAPImageData->GetImageGeometry().GetImageDirectionCosineMatrix(),
         m_DisplayToAnatomyRAI,
             m_SNAPImageData->GetVolumeExtents()));
+    }
+
+  // Create the appropriate transform and pass it to the JOIN data
+  if(m_JOINImageData->IsMainLoaded())
+    {
+    m_JOINImageData->SetImageGeometry(
+      ImageCoordinateGeometry(
+        m_JOINImageData->GetImageGeometry().GetImageDirectionCosineMatrix(),
+        m_DisplayToAnatomyRAI,
+            m_JOINImageData->GetVolumeExtents()));
     }
 
   // Invoke the corresponding event

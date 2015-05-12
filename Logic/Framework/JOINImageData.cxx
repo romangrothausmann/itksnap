@@ -331,6 +331,10 @@ JOINImageData
     m_JdstWrapper->SetImage(m_JoinCF->GetOutput());
     m_JdstWrapper->GetImage()->Modified();
     m_JoinCF->InPlaceOn(); //adjust Jdst directly
+
+    // m_JdstWrapper->GetImage()->SetDirection(m_MainImageWrapper->GetImageBase()->GetDirection());
+    // m_JdstWrapper->GetImage()->SetSpacing(m_MainImageWrapper->GetImageBase()->GetSpacing());
+    // m_JdstWrapper->GetImage()->SetOrigin(m_MainImageWrapper->GetImageBase()->GetOrigin());
     }
 
 JOINImageData::JoinCopyFilterPointer
