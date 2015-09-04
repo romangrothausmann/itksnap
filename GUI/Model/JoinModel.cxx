@@ -2,6 +2,22 @@
 #include "GlobalState.h"
 #include "IRISApplication.h"
 #include "JOINImageData.h"
+//#include "time_lapse.h"
+// #include <chrono>
+
+// template<typename TimeT = std::chrono::milliseconds>
+// struct measure
+// {
+//     template<typename F, typename ...Args>
+//     static typename TimeT::rep execution(F func, Args&&... args)
+//     {
+//         auto start = std::chrono::system_clock::now();
+//         func(std::forward<Args>(args)...);
+//         auto duration = std::chrono::duration_cast< TimeT> 
+//                             (std::chrono::system_clock::now() - start);
+//         return duration.count();
+//     }
+// };
 
 JoinModel::JoinModel(){
     }
@@ -51,7 +67,8 @@ JoinModel
 	// Check if the right button was pressed
 	if(processCnJ(reverse_mode)){
 	    //add undo point (todo: Undo has no effect so far)
-	    m_Parent->GetDriver()->StoreUndoPoint("Click'n'Join");
+	    //m_Parent->GetDriver()->StoreUndoPoint("Click'n'Join");
+	    //std::cerr << measure<>::execution(functor(m_Parent->GetDriver()->StoreUndoPoint("Click'n'Join"))) << std::endl;
 	    //fire SegmentationChangeEvent for e.g. 3D view Update
 	    m_Parent->GetDriver()->InvokeEvent(SegmentationChangeEvent());
 	    }

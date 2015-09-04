@@ -289,7 +289,7 @@ PaintbrushModel
 	////Update the brush state
 	if(UpdateBrush()){
 	    ////tell the GUI to repaint the segmentation and that the 3D view can be updated
-	    m_Parent->GetDriver()->StoreUndoPoint("Dynamic Granularity change");
+	    //m_Parent->GetDriver()->StoreUndoPoint("Dynamic Granularity change");
 	    m_Parent->GetDriver()->InvokeEvent(SegmentationChangeEvent());
 	    return true;
 	    }
@@ -366,7 +366,7 @@ PaintbrushModel
   // If the mouse is being released, we need to commit the drawing
   if(release)
     {
-    driver->StoreUndoPoint("Drawing with paintbrush");
+    //driver->StoreUndoPoint("Drawing with paintbrush");
 
     // TODO: this is ugly. The code for applying a brush should really be
     // placed in the IRISApplication.
@@ -407,7 +407,7 @@ void PaintbrushModel::AcceptAtCursor()
   ApplyBrush(false, false);
 
   // We need to commit the drawing
-  driver->StoreUndoPoint("Drawing with paintbrush");
+  //driver->StoreUndoPoint("Drawing with paintbrush");
 
   // TODO: this is ugly. The code for applying a brush should really be
   // placed in the IRISApplication.

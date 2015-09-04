@@ -133,6 +133,8 @@ void JoinDataPanel::on_btnFinishCnJ_clicked(){
 
     // Set an undo point
     driver->StoreUndoPoint("Automatic Segmentation");
+    //fire SegmentationChangeEvent for e.g. 3D view Update
+    driver->InvokeEvent(SegmentationChangeEvent());
 
     // Return to IRIS mode
     driver->SetCurrentImageDataToIRIS();

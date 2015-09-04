@@ -951,6 +951,9 @@ void
 IRISApplication
 ::StoreUndoPoint(const char *text)
 {
+    std::cerr << "Seconds needed for StoreUndoPoint: ";
+    clock_t begin = clock();
+
   // Set the current state as the undo point. We store the difference between
   // the last 'undo' image and the current segmentation image, and then copy
   // the current segmentation image into the undo image
@@ -1013,6 +1016,8 @@ IRISApplication
   m_LabelUseHistory->RecordLabelUse(
         m_GlobalState->GetDrawingColorLabel(),
         m_GlobalState->GetDrawOverFilter());
+  clock_t end = clock();
+  std::cerr << double(end - begin) / CLOCKS_PER_SEC << std::endl;
 }
 
 
