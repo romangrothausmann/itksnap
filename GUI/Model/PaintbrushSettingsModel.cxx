@@ -70,7 +70,7 @@ bool PaintbrushSettingsModel
   // Round just in case
   value = (int) (pbs.radius * 2 + 0.5);
   if(domain)
-    domain->Set(1, 40, 1);
+    domain->Set(1, 1000, 1);
   return true;
 }
 
