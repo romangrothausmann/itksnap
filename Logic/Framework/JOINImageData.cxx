@@ -313,6 +313,8 @@ JOINImageData
     m_JoinCF= JoinCopyFilterType::New();
     m_JoinCF->SetJsrc(m_JsrcWrapper->GetImage());
     m_JoinCF->SetJdst(m_JdstWrapper->GetImage());
+    m_JdstWrapper->InitializeToWrapper(m_MainImageWrapper, m_JoinCF->GetOutput());
+    m_JdstWrapper->CopyImageCoordinateTransform(m_MainImageWrapper);
     m_JdstWrapper->SetImage(m_JoinCF->GetOutput());
     m_JdstWrapper->GetImage()->Modified();
     m_JoinCF->InPlaceOn(); //adjust Jdst directly
