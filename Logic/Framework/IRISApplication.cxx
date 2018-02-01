@@ -60,6 +60,7 @@
 #include "itkBSplineInterpolateImageFunction.h"
 #include "itkLinearInterpolateImageFunction.h"
 #include "itkWindowedSincInterpolateImageFunction.h"
+#include "itkRegionOfInterestImageFilter.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 #include "itkFlipImageFilter.h"
@@ -325,37 +326,19 @@ IRISApplication
 {
   assert(m_JOINImageData->IsJsrcLoaded());
 
-  ////creating (shallow) copy, should only be used for initialization of CnJ (GWS fills its Jsrc with WS)
+  ////should only be used for initialization of CnJ (GWS fills its Jsrc with WS)
   ////avoids m_IRISImageData->GetSegmentation()->DeepCopyRegion in case JSRType != LabelType
 
   typedef LabelImageWrapper::ImageType SourceImageType;
   typedef JsrcImageWrapper::ImageType TargetImageType;
 
-  SourceImageType::Pointer source = m_IRISImageData->GetSegmentation()->GetImage();
-  TargetImageType::Pointer target = m_JOINImageData->GetJsrc()->GetImage();
+  typedef itk::RegionOfInterestImageFilter<SourceImageType, TargetImageType> ROIType;
+  typename ROIType::Pointer roif = ROIType::New();
+  roif->SetInput(m_IRISImageData->GetSegmentation()->GetImage());
+  roif->SetRegionOfInterest(roi.GetROI());
+  roif->Update();
 
-  // Create iterators for copying from one to the other
-  typedef itk::ImageRegionConstIterator<SourceImageType> SourceIteratorType;
-  typedef itk::ImageRegionIterator<TargetImageType> TargetIteratorType;
-  //SourceIteratorType itSource(source,source->GetBufferedRegion());
-  TargetIteratorType itTarget(target,target->GetBufferedRegion());
-  SourceIteratorType itSource(source,roi.GetROI());
-  //TargetIteratorType itTarget(target,roi.GetROI());
-
-  // Go through both iterators, copy the new over the old
-  itSource.GoToBegin();
-  itTarget.GoToBegin();
-  while(!itSource.IsAtEnd())
-    {
-    itTarget.Set(itSource.Get());//needs no cast as JSRType >= LabelType
-
-    ++itSource;
-    ++itTarget;
-    }
-
-  // The target has been modified
-  target->Modified();
-
+  m_JOINImageData->SetJsrc(roif->GetOutput());
 
   InvokeEvent(LayerChangeEvent());
 }
@@ -395,31 +378,13 @@ IRISApplication
   typedef LabelImageWrapper::ImageType SourceImageType;
   typedef JdstImageWrapper::ImageType TargetImageType;
 
-  SourceImageType::Pointer source = m_IRISImageData->GetSegmentation()->GetImage();
-  TargetImageType::Pointer target = m_JOINImageData->GetJdst()->GetImage();
+  typedef itk::RegionOfInterestImageFilter<SourceImageType, TargetImageType> ROIType;
+  typename ROIType::Pointer roif = ROIType::New();
+  roif->SetInput(m_IRISImageData->GetSegmentation()->GetImage());
+  roif->SetRegionOfInterest(roi.GetROI());
+  roif->Update();
 
-  // Create iterators for copying from one to the other
-  typedef itk::ImageRegionConstIterator<SourceImageType> SourceIteratorType;
-  typedef itk::ImageRegionIterator<TargetImageType> TargetIteratorType;
-  //SourceIteratorType itSource(source,source->GetBufferedRegion());
-  TargetIteratorType itTarget(target,target->GetBufferedRegion());
-  SourceIteratorType itSource(source,roi.GetROI());
-  //TargetIteratorType itTarget(target,roi.GetROI());
-
-  // Go through both iterators, copy the new over the old
-  itSource.GoToBegin();
-  itTarget.GoToBegin();
-  while(!itSource.IsAtEnd())
-    {
-    itTarget.Set(itSource.Get());
-
-    ++itSource;
-    ++itTarget;
-    }
-
-  // The target has been modified
-  target->Modified();
-
+  m_JOINImageData->GetJdst()->SetImage(roif->GetOutput());
 
   InvokeEvent(LayerChangeEvent());
 }

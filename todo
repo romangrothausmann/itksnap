@@ -1,6 +1,5 @@
 ToDo:
 
-- optimize CopySegementationToJdst and CopySegementationToJsrc
 -- RMB functionality in JoinCopyFilter
 
 - combine mode 2 with mode 0 and add extra button for "LoadImageToJsrc"
@@ -27,3 +26,4 @@ Done:
 
 -implement JoinCopyFilter (templated over dimension)
 -- multi-threaded ImageRegionIterator
+- optimize CopySegementationToJdst and CopySegementationToJsrc
