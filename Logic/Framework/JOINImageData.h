@@ -83,6 +83,7 @@ public:
   
   void InitializeJdst();
   JdstImageWrapper* GetJdst();
+  void SetJdst(JdstImageType *newJdstImage);
   bool IsJdstLoaded();
   void SetJdstSticky(bool sticky);
 

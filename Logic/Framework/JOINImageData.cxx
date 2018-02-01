@@ -154,6 +154,25 @@ JOINImageData
     return m_JdstWrapper;
     }
 
+void
+JOINImageData
+::SetJdst(JdstImageType *newJdstImage){
+    ////from ./Logic/Framework/GenericImageData.cxx:244:::SetSegmentationImage
+    // Check that the image matches the size of the grey image
+    assert(m_MainImageWrapper->IsInitialized());
+
+    assert(m_MainImageWrapper->GetBufferedRegion() ==
+	newJdstImage->GetBufferedRegion());
+
+    // Pass the image to the wrapper
+    m_JdstWrapper->SetImage(newJdstImage);
+    m_JdstWrapper->GetImage()->Modified();// This makes sure that the IsDrawable() of the wrapper returns true, essential for showing up in the the SliceView (l.284 GenericSliceRenderer.cxx)
+
+    // Sync up spacing between the main and label image
+    newJdstImage->SetSpacing(m_MainImageWrapper->GetImageBase()->GetSpacing());
+    newJdstImage->SetOrigin(m_MainImageWrapper->GetImageBase()->GetOrigin());
+    }
+
 bool 
 JOINImageData
 ::IsJdstLoaded() 

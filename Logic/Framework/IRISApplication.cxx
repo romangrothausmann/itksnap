@@ -384,7 +384,7 @@ IRISApplication
   roif->SetRegionOfInterest(roi.GetROI());
   roif->Update();
 
-  m_JOINImageData->GetJdst()->SetImage(roif->GetOutput());
+  m_JOINImageData->SetJdst(roif->GetOutput());
 
   InvokeEvent(LayerChangeEvent());
 }
