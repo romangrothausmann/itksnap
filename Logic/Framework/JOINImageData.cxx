@@ -113,6 +113,8 @@ JOINImageData
     // Sync up spacing between the main and label image
     newJsrcImage->SetSpacing(m_MainImageWrapper->GetImageBase()->GetSpacing());
     newJsrcImage->SetOrigin(m_MainImageWrapper->GetImageBase()->GetOrigin());
+
+    m_JoinCF->SetJsrc(newJsrcImage); //input to JoinCF needs to be reset as well
     }
 
 bool 
@@ -171,6 +173,8 @@ JOINImageData
     // Sync up spacing between the main and label image
     newJdstImage->SetSpacing(m_MainImageWrapper->GetImageBase()->GetSpacing());
     newJdstImage->SetOrigin(m_MainImageWrapper->GetImageBase()->GetOrigin());
+
+    m_JoinCF->SetJdst(newJdstImage); //input to JoinCF needs to be reset as well
     }
 
 bool 
