@@ -987,6 +987,11 @@ IRISApplication
     m_GlobalState->SetCrosshairsPosition(cursor);
     this->GetCurrentImageData()->SetCrosshairs(cursor);
 
+    fprintf(stdout, "%6d\t%6d\t%6d\n",
+	cursor[0] + 1,
+	cursor[1] + 1,
+	cursor[2] + 1);
+
     // Fire the appropriate event
     InvokeEvent(CursorUpdateEvent());
     }
