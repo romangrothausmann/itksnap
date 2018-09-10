@@ -133,6 +133,15 @@ enum AnatomicalDirection
   ANATOMY_NONSENSE
 };
 
+// List of available interpolation methods
+enum InterpolationMethod {
+  NEAREST_NEIGHBOR = 0,
+  TRILINEAR,
+  TRICUBIC,
+  SINC_WINDOW_05
+};
+
+
 
 
 // An atomic data type to represent draw-over state

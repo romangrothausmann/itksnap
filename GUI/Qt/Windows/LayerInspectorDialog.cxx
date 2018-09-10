@@ -28,6 +28,7 @@
 #include "QtActionCoupling.h"
 #include "QtActionGroupCoupling.h"
 #include "DisplayLayoutModel.h"
+#include "QShortcut"
 
 #include <QMenu>
 
@@ -206,18 +207,10 @@ void LayerInspectorDialog::BuildLayerWidgetHierarchy()
   // Before deleting all of the existing widgets in the pane,
   // find the one that is currently selected, and remember its
   // layer, so we can re-select it if needed
-  bool have_selected_layer = false, found_selected_layer = false;
-  unsigned long selected_layer = 0;
-  for(QList<LayerInspectorRowDelegate *>::iterator itdel = m_Delegates.begin();
-      itdel != m_Delegates.end(); ++itdel)
-    {
-    if((*itdel)->selected() && (*itdel)->GetLayer())
-      {
-      selected_layer = (*itdel)->GetLayer()->GetUniqueId();
-      have_selected_layer = true;
-      break;
-      }
-    }
+  bool found_selected_layer = false;
+
+  // Get the ID of the currently selected layer
+  unsigned long selected_layer = m_Model->GetGlobalState()->GetSelectedLayerId();
 
   // Get rid of all existing widgets in the pane
   m_Delegates.clear();
@@ -280,12 +273,11 @@ void LayerInspectorDialog::BuildLayerWidgetHierarchy()
 
     // Select the layer if it was previously selected or nothing was previously
     // selected and the layer is the main layer
-    if((have_selected_layer && it.GetLayer()->GetUniqueId() == selected_layer))
+    if(it.GetLayer()->GetUniqueId() == selected_layer)
       {
       w->setSelected(true);
       found_selected_layer = true;
       }
-
     else
       {
       w->setSelected(false);
@@ -295,7 +287,7 @@ void LayerInspectorDialog::BuildLayerWidgetHierarchy()
     m_Delegates.push_back(w);
     }
 
-  // If we haven't selected anything, select the main layer's widget
+  // If we haven't selected anything, select the main layer's widget - this should not happen
   if(!found_selected_layer && w_main)
     w_main->setSelected(true);
 

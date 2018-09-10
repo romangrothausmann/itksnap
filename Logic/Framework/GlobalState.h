@@ -114,7 +114,8 @@ enum ToolbarModeType
   JOIN_MODE,              //5: btnJoinInspector
   GLOBALWS_ROI_MODE,      //6: btnSnakeInspector
   GWSJOIN_MODE,           //7: btnCursorInspector
-  ANNOTATION_MODE         //8: btnSnakeInspector
+  ANNOTATION_MODE,
+  REGISTRATION_MODE
 };
 
 enum ToolbarMode3DType

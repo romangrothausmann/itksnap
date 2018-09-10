@@ -16,6 +16,7 @@
 #include "SliceWindowCoordinator.h"
 #include "PolygonDrawingModel.h"
 #include "AnnotationModel.h"
+#include "InteractiveRegistrationModel.h"
 #include "AnnotationRenderer.h"
 #include "QtWidgetActivator.h"
 #include "SnakeModeRenderer.h"
@@ -26,6 +27,7 @@
 #include "SliceWindowDecorationRenderer.h"
 #include "LayerInspectorDialog.h"
 #include "MainImageWindow.h"
+#include "RegistrationRenderer.h"
 #include "SNAPQtCommon.h"
 #include "QtScrollbarCoupling.h"
 #include "QtSliderCoupling.h"
@@ -191,6 +193,7 @@ void SliceViewPanel::Initialize(GlobalUIModel *model, unsigned int index)
   ui->imJoin->SetModel(m_GlobalUI->GetJoinModel(index));
   ui->imPaintbrush->SetModel(m_GlobalUI->GetPaintbrushModel(index));
   ui->imAnnotation->SetModel(m_GlobalUI->GetAnnotationModel(index));
+  ui->imRegistration->SetModel(m_GlobalUI->GetInteractiveRegistrationModel(index));
 
   // ui->labelQuickList->SetModel(m_GlobalUI);
 
@@ -230,6 +233,9 @@ void SliceViewPanel::Initialize(GlobalUIModel *model, unsigned int index)
 
   // Listen to annotation changes
   connectITK(m_GlobalUI->GetAnnotationModel(index), ModelUpdateEvent());
+
+  // Listen to registration changes
+  connectITK(m_GlobalUI->GetInteractiveRegistrationModel(index), ModelUpdateEvent());
 
   // Listen to all (?) events from the snake wizard as well
   connectITK(m_GlobalUI->GetSnakeWizardModel(), IRISEvent());
@@ -413,6 +419,10 @@ void SliceViewPanel::OnToolbarModeChange()
     case JOIN_MODE:
     case GWSJOIN_MODE:
       ConfigureEventChain(ui->imJoin);
+      break;
+    case REGISTRATION_MODE:
+      ConfigureEventChain(ui->imRegistration);
+      ovTiled.push_back(ui->imRegistration->GetRenderer());
       break;
     case GLOBALWS_ROI_MODE:
     case SNAKE_ROI_MODE:

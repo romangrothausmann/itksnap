@@ -72,6 +72,9 @@ public:
   typedef ImageWrapperBase::DisplaySliceType DisplaySliceType;
   typedef ImageWrapperBase::DisplaySlicePointer DisplaySlicePointer;
 
+  typedef InputSliceType::PixelType InputPixelType;
+  typedef DisplaySliceType::PixelType DisplayPixelType;
+
   /**
    * Set the table of color labels used to produce color slice images
    */
@@ -92,6 +95,8 @@ public:
 
   virtual void Save(Registry &folder) {}
   virtual void Restore(Registry &folder) {}
+
+  virtual DisplayPixelType MapPixel(const InputPixelType &val);
 
 protected:
 
@@ -319,6 +324,8 @@ public:
   virtual void Save(Registry &folder);
   virtual void Restore(Registry &folder);
 
+  virtual DisplayPixelType MapPixel(const PixelType &val);
+
 
 protected:
 
@@ -396,6 +403,11 @@ struct MultiChannelDisplayMode
   bool UseRGB;
 
   /**
+   * Special mode for rendering 3-component images as displacement grids
+   */
+  bool RenderAsGrid;
+
+  /**
    * When not in RGB mode, which scalar representation is selected for
    * display. Only used if UseRGB is false.
    */
@@ -411,7 +423,7 @@ struct MultiChannelDisplayMode
   MultiChannelDisplayMode();
 
   /** Default constructor - select first component */
-  MultiChannelDisplayMode(bool use_rgb,
+  MultiChannelDisplayMode(bool use_rgb, bool render_as_grid,
                           ScalarRepresentation rep,
                           int comp = 0);
 
@@ -498,7 +510,9 @@ public:
 
   irisGetMacro(ColorMap, ColorMap *)
 
-  protected:
+  DisplayPixelType MapPixel(const PixelType &xin);
+
+protected:
 
   LinearColorMapDisplayMappingPolicy();
   virtual ~LinearColorMapDisplayMappingPolicy();
@@ -595,6 +609,8 @@ public:
   virtual void AutoFitContrast();
 
   irisGetMacro(ScalarRepresentation, ScalarImageWrapperBase *)
+
+  DisplayPixelType MapPixel(const PixelType &val);
 
 protected:
 

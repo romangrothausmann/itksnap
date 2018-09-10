@@ -3,6 +3,7 @@
 
 #include "SNAPCommon.h"
 #include "ImageWrapperBase.h"
+#include "RLEImageRegionIterator.h"
 
 #include "CommonRepresentationPolicy.h"
 #include "DisplayMappingPolicy.h"
@@ -38,7 +39,8 @@ public:
   typedef ScalarImageWrapper<LabelImageWrapperTraits> WrapperType;
 
   typedef LabelType ComponentType;
-  typedef itk::Image<ComponentType, 3> ImageType;
+  typedef RLEImage<ComponentType> ImageType;
+  typedef itk::Image<ComponentType, 2> SliceType;
 
   typedef IdentityInternalToNativeIntensityMapping NativeIntensityMapping;
   typedef ColorLabelTableDisplayMappingPolicy<Self> DisplayMapping;
@@ -107,6 +109,7 @@ public:
 
   typedef GreyType ComponentType;
   typedef itk::Image<ComponentType, 3> ImageType;
+  typedef itk::Image<ComponentType, 2> SliceType;
 
   typedef SpeedImageInternalToNativeIntensityMapping NativeIntensityMapping;
   typedef LinearColorMapDisplayMappingPolicy<Self> DisplayMapping;
@@ -133,6 +136,7 @@ public:
 
   typedef float ComponentType;
   typedef itk::Image<ComponentType, 3> ImageType;
+  typedef itk::Image<ComponentType, 2> SliceType;
 
   typedef IdentityInternalToNativeIntensityMapping NativeIntensityMapping;
   typedef LinearColorMapDisplayMappingPolicy<Self> DisplayMapping;
@@ -178,6 +182,8 @@ public:
 
   typedef TPixel ComponentType;
   typedef itk::VectorImageToImageAdaptor<ComponentType, 3> ImageType;
+  typedef itk::Image<ComponentType, 2> SliceType;
+
 
   typedef LinearInternalToNativeIntensityMapping NativeIntensityMapping;
   typedef CachingCurveAndColorMapDisplayMappingPolicy<Self> DisplayMapping;
@@ -205,6 +211,8 @@ public:
   typedef itk::VectorImage<InternalComponentType, 3> InternalImageType;
   typedef VectorToScalarImageAccessor<TFunctor> AccessorType;
   typedef itk::ImageAdaptor<InternalImageType, AccessorType> ImageType;
+  typedef itk::Image<ComponentType, 2> SliceType;
+
 
   typedef IdentityInternalToNativeIntensityMapping NativeIntensityMapping;
   typedef CachingCurveAndColorMapDisplayMappingPolicy<Self> DisplayMapping;
@@ -235,6 +243,7 @@ public:
   typedef ScalarImageWrapper<ComponentWrapperTraits> ComponentWrapperType;
 
   typedef itk::VectorImage<ComponentType, 3> ImageType;
+  typedef itk::VectorImage<ComponentType, 2> SliceType;
 
   typedef LinearInternalToNativeIntensityMapping NativeIntensityMapping;
   typedef MultiChannelDisplayMappingPolicy<Self> DisplayMapping;
@@ -257,6 +266,7 @@ public:
 
   typedef TPixel ComponentType;
   typedef itk::Image<ComponentType, 3> ImageType;
+  typedef itk::Image<ComponentType, 2> SliceType;
 
   typedef LinearInternalToNativeIntensityMapping NativeIntensityMapping;
   typedef CachingCurveAndColorMapDisplayMappingPolicy<Self> DisplayMapping;
